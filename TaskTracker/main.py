@@ -45,6 +45,6 @@ list_tasks_sub_command.add_argument("status",
 
 args = parser.parse_args()
 try:
-    commands[args.action][0](args, **commands[args.action][1])
+    commands[args.action][0](args=args, **commands[args.action][1])
 except Exception as e:
     print(f"An error occurred in the action {args.action}: {e}")

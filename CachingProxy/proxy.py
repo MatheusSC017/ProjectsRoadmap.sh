@@ -20,8 +20,9 @@ def proxy(path=''):
 
     dest_url = f"{args.origin}/{path}"
     response = requests.request(method, dest_url, headers=headers, data=data)
-
-    return Response(response.content, response.status_code)
+    headers = [(k, v) for k, v in response.headers.items()
+               if k not in ('Content-Length', 'Content-Encoding', 'Transfer-Encoding', 'Connection')]
+    return Response(response.content, response.status_code, headers=headers)
 
 
 app.run(debug=True, port=args.port)

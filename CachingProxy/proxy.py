@@ -22,15 +22,14 @@ def load_cache():
     else:
         cache = {}
 
+
 def caching_proxy(
     port: Annotated[int, typer.Option(help="Port used to run the proxy")] = 3000,
     origin: Annotated[str, typer.Option(help="link to the website that will be targeted by the proxy")] = 'http://dummyjson.com',
     clear: Annotated[bool, typer.Option(help="Clean cache")] = False
 ):
     if clear:
-        global cache
         os.remove(CACHE_FILE)
-        cache = {}
     else:
         app = Flask(__name__)
 
@@ -44,7 +43,6 @@ def caching_proxy(
             dest_url = f"{origin}/{path}"
 
             load_cache()
-            print(cache.keys())
             if dest_url not in cache.keys():
                 response = requests.request(method, dest_url, headers=headers, data=data)
                 headers = [(k, v) for k, v in response.headers.items()
@@ -56,10 +54,8 @@ def caching_proxy(
                 save_cache()
             else:
                 content, status_code, headers = cache[dest_url]
-                for i, header in enumerate(headers):
-                    if header[0] == 'X-Cache':
-                        headers.pop(i)
-                        break
+                if ['X-Cache', 'MISS'] in headers:
+                    headers.pop(headers.index(['X-Cache', 'MISS']))
                 headers.append(('X-Cache', 'HIT'))
 
             return Response(content, status_code, headers=headers)

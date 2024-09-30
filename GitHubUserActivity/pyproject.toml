@@ -1,0 +1,16 @@
+[project.scripts]
+user-activity = "main:app"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name="CachingProxy"
+version="1.0.0"
+readme="readme.md"
+requires-python = ">=3.10"
+dependencies = [
+  "requests==2.32.3",
+  "typer==0.12.5"
+]
